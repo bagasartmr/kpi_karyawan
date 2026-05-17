@@ -36,7 +36,7 @@ def index():
     )
 
 # =========================
-# ROUTE TAMBAH DATA
+# ROUTE TAMBAH DATA KARYAWAN
 # =========================
 
 @app.route('/tambah', methods=['GET', 'POST'])
