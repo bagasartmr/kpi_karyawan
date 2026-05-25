@@ -21,7 +21,38 @@ def index():
 
     cur = mysql.connection.cursor()
 
-    cur.execute("SELECT * FROM karyawan")
+    cur.execute("""
+
+        SELECT
+
+            k.id_karyawan,
+            k.nama,
+            k.jabatan,
+            k.divisi,
+            k.alamat,
+            k.no_hp,
+
+            p.kualitas,
+            p.kuantitas,
+            p.kehadiran,
+            p.disiplin,
+            p.total_kpi,
+            p.grade
+
+        FROM karyawan k
+
+        LEFT JOIN penilaian_kpi p
+        ON p.id_penilaian = (
+
+            SELECT MAX(id_penilaian)
+
+            FROM penilaian_kpi
+
+            WHERE id_karyawan = k.id_karyawan
+
+        )
+
+    """)
 
     data = cur.fetchall()
 
@@ -31,7 +62,7 @@ def index():
 
     return render_template(
         'index.html',
-        karyawan=data,
+        data=data,
         total=total
     )
 
@@ -124,6 +155,100 @@ def edit(id):
     cur.close()
 
     return render_template('edit.html', data=data)
+
+# =========================
+# ROUTE INPUT KPI KARYAWAN
+# =========================
+
+@app.route('/kpi', methods=['GET', 'POST'])
+def kpi():
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("SELECT * FROM karyawan")
+
+    karyawan = cur.fetchall()
+
+    if request.method == 'POST':
+
+        id_karyawan = request.form['id_karyawan']
+
+        kualitas = int(request.form['kualitas'])
+        kuantitas = int(request.form['kuantitas'])
+
+        absensi = int(request.form['absensi'])
+        pulang_cepat = int(request.form['pulang_cepat'])
+
+        sanksi = int(request.form['sanksi'])
+        ketepatan_hadir = int(request.form['ketepatan_hadir'])
+
+        # Rata-rata Kehadiran
+        kehadiran = (absensi + pulang_cepat) / 2
+
+        # Rata-rata Disiplin
+        disiplin = (sanksi + ketepatan_hadir) / 2
+
+        # Total KPI
+        total_kpi = kualitas + kuantitas + kehadiran + disiplin
+
+        # Grade
+        if total_kpi >= 19:
+            grade = 'BS'
+
+        elif total_kpi >= 16:
+            grade = 'B'
+
+        elif total_kpi >= 12:
+            grade = 'S'
+
+        elif total_kpi >= 8:
+            grade = 'C'
+
+        else:
+            grade = 'K'
+
+        cur.execute("""
+            INSERT INTO penilaian_kpi (
+
+                id_karyawan,
+                kualitas,
+                kuantitas,
+                absensi,
+                pulang_cepat,
+                sanksi,
+                ketepatan_hadir,
+                kehadiran,
+                disiplin,
+                total_kpi,
+                grade
+
+            )
+
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+
+        """, (
+
+            id_karyawan,
+            kualitas,
+            kuantitas,
+            absensi,
+            pulang_cepat,
+            sanksi,
+            ketepatan_hadir,
+            kehadiran,
+            disiplin,
+            total_kpi,
+            grade
+
+        ))
+
+        mysql.connection.commit()
+
+        cur.close()
+
+        return redirect('/')
+
+    return render_template('kpi.html', karyawan=karyawan)
 
 if __name__ == '__main__':
     app.run(debug=True)

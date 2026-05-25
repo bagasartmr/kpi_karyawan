@@ -118,44 +118,75 @@
             <a href="/tambah" class="btn btn-primary mb-3">
             + Tambah Karyawan
             </a>
-
+            
+            <a href="/kpi" class="btn btn-success">
+                Input KPI
+            </a>
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Jabatan</th>
-                        <th>Divisi</th>
-                        <th>No HP</th>
-                        <th>No HP</th>
-                    </tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Divisi</th>
+                    <th>Alamat</th>
+                    <th>No HP</th>
+
+                    <th>Kualitas</th>
+                    <th>Kuantitas</th>
+                    <th>Kehadiran</th>
+                    <th>Disiplin</th>
+                    <th>Total KPI</th>
+                    <th>Grade</th>
+
+                    <th>Aksi</th>
+                </tr>
                 </thead>
 
-                <tbody>
+                    <tbody>
 
-                    {% for k in karyawan %}
+                    {% for k in data %}
 
                     <tr>
+
                         <td>{{ k[0] }}</td>
                         <td>{{ k[1] }}</td>
                         <td>{{ k[2] }}</td>
                         <td>{{ k[3] }}</td>
+                        <td>{{ k[4] }}</td>
                         <td>{{ k[5] }}</td>
+
+                        <td>{{ k[6] }}</td>
+                        <td>{{ k[7] }}</td>
+                        <td>{{ k[8] }}</td>
+                        <td>{{ k[9] }}</td>
+                        <td>{{ k[10] }}</td>
+                        <td>{{ k[11] }}</td>
+
                         <td>
-                            <a href="/edit/{{ k[0] }}" class="btn btn-warning btn-sm">
-                                Edit
+
+                            <a href="/edit/{{ k[0] }}"
+                            class="btn btn-warning btn-sm">
+
+                            Edit
+
                             </a>
+
                             <a href="/hapus/{{ k[0] }}"
                             class="btn btn-danger btn-sm"
                             onclick="return confirm('Yakin ingin hapus data?')">
-                                Hapus
+
+                            Hapus
+
                             </a>
+
                         </td>
+
                     </tr>
 
                     {% endfor %}
 
-                </tbody>
+                    </tbody>
 
             </table>
 
