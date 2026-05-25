@@ -66,6 +66,65 @@ def tambah():
 
     return render_template('tambah.html')
 
+# =========================
+# ROUTE HAPUS DATA KARYAWAN
+# =========================
+
+@app.route('/hapus/<int:id>')
+def hapus(id):
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("DELETE FROM karyawan WHERE id_karyawan=%s", (id,))
+
+    mysql.connection.commit()
+
+    cur.close()
+
+    return redirect('/')
+
+# =========================
+# ROUTE EDIT DATA KARYAWAN
+# =========================
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+
+        nama = request.form['nama']
+        jabatan = request.form['jabatan']
+        divisi = request.form['divisi']
+        alamat = request.form['alamat']
+        no_hp = request.form['no_hp']
+
+        cur.execute("""
+            UPDATE karyawan
+            SET
+                nama=%s,
+                jabatan=%s,
+                divisi=%s,
+                alamat=%s,
+                no_hp=%s
+            WHERE id_karyawan=%s
+        """, (nama, jabatan, divisi, alamat, no_hp, id))
+
+        mysql.connection.commit()
+
+        cur.close()
+
+        return redirect('/')
+
+    cur.execute("SELECT * FROM karyawan WHERE id_karyawan=%s", (id,))
+
+    data = cur.fetchone()
+
+    cur.close()
+
+    return render_template('edit.html', data=data)
+
 if __name__ == '__main__':
     app.run(debug=True)
 

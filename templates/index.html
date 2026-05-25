@@ -127,6 +127,7 @@
                         <th>Jabatan</th>
                         <th>Divisi</th>
                         <th>No HP</th>
+                        <th>No HP</th>
                     </tr>
                 </thead>
 
@@ -140,6 +141,16 @@
                         <td>{{ k[2] }}</td>
                         <td>{{ k[3] }}</td>
                         <td>{{ k[5] }}</td>
+                        <td>
+                            <a href="/edit/{{ k[0] }}" class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+                            <a href="/hapus/{{ k[0] }}"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Yakin ingin hapus data?')">
+                                Hapus
+                            </a>
+                        </td>
                     </tr>
 
                     {% endfor %}
